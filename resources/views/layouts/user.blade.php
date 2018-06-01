@@ -6,6 +6,9 @@
 	<title>{{ env('APP_NAME') }}</title>
 	<!-- Tell the browser to be responsive to screen width -->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	{{--Laravel CSRF--}}
+	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<!-- Font Awesome -->
 	<link rel="stylesheet" href="{{ asset('plugins/font-awesome/css/font-awesome.min.css') }}">
 	<!-- Ionicons -->
@@ -216,9 +219,14 @@
 						</ul>
 					</li>
 					<li class="nav-item has-treeview">
-						<a href="{{ route('home') }}" class="nav-link">
+						<a href="{{ route('logout') }}" class="nav-link" onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
 							<i class="nav-icon fa fa-lock"></i>
 							<p>Logout</p>
+
+							<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+								@csrf
+							</form>
 						</a>
 					</li>
 				</ul>
