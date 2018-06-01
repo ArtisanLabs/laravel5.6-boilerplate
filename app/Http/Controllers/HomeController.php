@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PasswordRequest;
+use App\User;
+use Illuminate\Support\Facades\Hash;
+
 class HomeController extends Controller {
 	/**
 	 * Create a new controller instance.
@@ -27,5 +31,43 @@ class HomeController extends Controller {
 	 */
 	public function getPasswordPage() {
 		return view('user.password');
+	}
+
+	/**
+	 * Process the request for updating the authenticated user password.
+	 * Uses the PasswordRequest to validate the request
+	 * @param PasswordRequest $request
+	 * @return \Illuminate\Http\RedirectResponse
+	 */
+	public function updateUserPassword(PasswordRequest $request) {
+		// Extract the request data.
+		$password = $request->password;
+		$newPassword = $request->newPassword;
+		$confirmPassword = $request->confirmPassword;
+
+		// Get the current password
+		$currentPassword = auth()->user()->password;
+		// Check if current password matches the sent password.
+		if (!Hash::check($password, $currentPassword)) {
+			return redirect()->back()->with('error', 'The entered password does not match our records.');
+		}
+
+		// Check if new password matches current password.
+		if (strcmp($newPassword, $password) == 0) {
+			return redirect()->back()->with('error', 'New password cannot be same as your current password.');
+		}
+
+		// Check if the new password matches the confirmation password.
+		if (strcmp($newPassword, $confirmPassword) != 0) {
+			return redirect()->back()->with('error', 'The confirmation password does not match.');
+		}
+
+		// Get the current auth user and update their password.
+		$user = auth()->user();
+		$user->password = bcrypt($newPassword);
+
+		$user->update();
+
+		return redirect()->back()->with('success', 'You have successfully changed your password.');
 	}
 }
