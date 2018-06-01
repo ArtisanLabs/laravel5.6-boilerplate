@@ -21,3 +21,14 @@ Route::get('/home', [
 	'uses' => 'HomeController@index',
 	'as' => 'home'
 ]);
+
+// The password routes
+Route::get('/password', [
+	'uses' => 'HomeController@getPasswordPage',
+	'as' => 'user.password'
+]);
+
+Route::post('/password', [
+	'uses' => 'HomeController@updateUserPassword',
+	'as' => 'user.password'
+]);
