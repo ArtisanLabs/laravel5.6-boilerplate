@@ -191,7 +191,7 @@
 								</a>
 							</li>
 							<li class="nav-item">
-								<a href="" class="nav-link">
+								<a href="{{ route('user.password') }}" class="nav-link">
 									<i class="fa fa-key nav-icon"></i>
 									<p>Change Password</p>
 								</a>
