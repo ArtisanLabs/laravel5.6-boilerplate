@@ -73,4 +73,13 @@ class HomeController extends Controller {
 
 		return redirect()->back()->with('success', 'You have successfully changed your password.');
 	}
+
+	/**
+	 * Show the user notifications created by the system as notifications.
+	 * Shows only the auth user notifs.
+	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+	 */
+	public function showUserInbox(){
+		return view('user.messages');
+	}
 }
