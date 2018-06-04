@@ -71,7 +71,7 @@ class HomeController extends Controller {
 		// Create a new password notification
 		auth()->user()->notify(new AccountActivity('Password Update', 'Your password has been successfully updated.'));
 
-		return redirect()->back()->with('success', 'You have successfully changed your password.');
+		return redirect()->back()->with('success', 'You have successfully changed your password. If this was not you, kindly contact the system administrator.');
 	}
 
 	/**
@@ -79,7 +79,16 @@ class HomeController extends Controller {
 	 * Shows only the auth user notifs.
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
-	public function showUserInbox(){
-		return view('user.messages');
+	public function showUserInbox() {
+		// Get all the unread notifications
+		$unreadNotifs = auth()->user()->unreadNotifications;
+
+		// Get count of all the user notifs
+		$allNotifs = auth()->user()->notifications->count();
+
+		return view('user.notifs.notifs', [
+			'unreadNotifs' => $unreadNotifs,
+			'allNotifs' => $allNotifs
+		]);
 	}
 }
