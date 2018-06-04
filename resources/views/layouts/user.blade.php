@@ -218,7 +218,7 @@
 						</ul>
 					</li>
 					<li class="nav-item has-treeview">
-						<a href="{{ route('user.inbox') }}" class="nav-link">
+						<a href="{{ route('user.notifs') }}" class="nav-link">
 							<i class="nav-icon fa fa-envelope"></i>
 							<p>Inbox</p>
 							<span class="right badge badge-danger">{{ $unreadNotifications->count() }} new</span>
