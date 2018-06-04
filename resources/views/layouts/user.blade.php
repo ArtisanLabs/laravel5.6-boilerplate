@@ -1,4 +1,31 @@
-<!DOCTYPE html>
+@php
+	function elapsedTime($updatedAt) {
+		$time = new \DateTime($updatedAt);
+		$now = new \DateTime(\Carbon\Carbon::now());
+		$interval = $time->diff($now);
+
+		if($interval->d == 1) {
+			return $elapsed = $interval->days." day";
+		}elseif ($interval->d > 1){
+			return $elapsed = $interval->days." days";
+		}elseif ($interval->h > 1 && $interval->d == 0) {
+			return $elapsed = $interval->h." hours";
+		} elseif ($interval->h == 0 && $interval->d == 0) {
+			if($elapsed = $interval->i == 1) {
+				return $elapsed = $interval->i." minute";
+			}
+			return $elapsed = $interval->i." minutes";
+		} else {
+			if ($elapsed = $interval->h == 1) {
+				return $elapsed = $interval->h." hour";
+			}
+			return $elapsed = $interval->h." hours";
+		}
+	}
+	$unreadNotifications = auth()->user()->unreadNotifications;
+
+@endphp
+		<!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -57,60 +84,38 @@
 			<li class="nav-item dropdown">
 				<a class="nav-link" data-toggle="dropdown" href="#">
 					<i class="fa fa-comments-o"></i>
-					<span class="badge badge-danger navbar-badge">3</span>
+					<span class="badge badge-danger navbar-badge">{{ $unreadNotifications->count() }}</span>
 				</a>
 				<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
 					<a href="#" class="dropdown-item">
 						<!-- Message Start -->
-						<div class="media">
-							<img src="{{ asset('img/avatar.png') }}" alt="User Avatar"
-							     class="img-size-50 mr-3 img-circle">
-							<div class="media-body">
-								<h3 class="dropdown-item-title">
-									Brad Diesel
-									<span class="float-right text-sm text-danger"><i class="fa fa-star"></i></span>
-								</h3>
-								<p class="text-sm">Call me whenever you can...</p>
-								<p class="text-sm text-muted"><i class="fa fa-clock-o mr-1"></i> 4 Hours Ago</p>
-							</div>
-						</div>
-						<!-- Message End -->
+						@if(count($unreadNotifications) > 0)
+							@foreach($unreadNotifications->take(3) as $item)
+								<div class="media">
+									<img src="{{ asset('img/avatar.png') }}" alt="User Avatar"
+									     class="img-size-50 mr-3 img-circle">
+									<div class="media-body">
+										<h3 class="dropdown-item-title">
+											{{ $item->data['title'] }}
+											<span class="float-right text-sm text-danger"><i
+														class="fa fa-star"></i></span>
+										</h3>
+										<p class="text-sm">{{ (strlen($item->data['message']) > 25) ? substr($item->data['message'], 0, 25).'...' : $item->data['message'] }}</p>
+										<p class="text-sm text-muted"><i
+													class="fa fa-clock-o mr-1"></i>{{ elapsedTime($item->updated_at) }}
+											ago</p>
+									</div>
+								</div>
+								<div class="dropdown-divider"></div>
+							@endforeach
+						@else
+							<i class="fa fa-envelope mr-2"></i>You have no new messages.
+
+							<span class="float-right text-muted text-sm"><i class="fa fa-refresh"></i></span>
+					@endif
+
+					<!-- Message End -->
 					</a>
-					<div class="dropdown-divider"></div>
-					<a href="#" class="dropdown-item">
-						<!-- Message Start -->
-						<div class="media">
-							<img src="{{ asset('img/avatar.png') }}" alt="User Avatar"
-							     class="img-size-50 img-circle mr-3">
-							<div class="media-body">
-								<h3 class="dropdown-item-title">
-									John Pierce
-									<span class="float-right text-sm text-muted"><i class="fa fa-star"></i></span>
-								</h3>
-								<p class="text-sm">I got your message bro</p>
-								<p class="text-sm text-muted"><i class="fa fa-clock-o mr-1"></i> 4 Hours Ago</p>
-							</div>
-						</div>
-						<!-- Message End -->
-					</a>
-					<div class="dropdown-divider"></div>
-					<a href="#" class="dropdown-item">
-						<!-- Message Start -->
-						<div class="media">
-							<img src="{{ asset('img/avatar.png') }}" alt="User Avatar"
-							     class="img-size-50 img-circle mr-3">
-							<div class="media-body">
-								<h3 class="dropdown-item-title">
-									Nora Silvester
-									<span class="float-right text-sm text-warning"><i class="fa fa-star"></i></span>
-								</h3>
-								<p class="text-sm">The subject goes here</p>
-								<p class="text-sm text-muted"><i class="fa fa-clock-o mr-1"></i> 4 Hours Ago</p>
-							</div>
-						</div>
-						<!-- Message End -->
-					</a>
-					<div class="dropdown-divider"></div>
 					<a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
 				</div>
 			</li>
@@ -121,11 +126,22 @@
 					<span class="badge badge-warning navbar-badge">15</span>
 				</a>
 				<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-					<span class="dropdown-item dropdown-header">15 Notifications</span>
+					<span class="dropdown-item dropdown-header">{{ number_format($unreadNotifications->count()) }}
+						Notifications</span>
 					<div class="dropdown-divider"></div>
 					<a href="#" class="dropdown-item">
-						<i class="fa fa-envelope mr-2"></i> 4 new messages
-						<span class="float-right text-muted text-sm">3 mins</span>
+						@if(count($unreadNotifications) > 0)
+							<i class="fa fa-envelope mr-2"></i> {{ number_format($unreadNotifications->count()) }} new
+							messages
+
+							<span class="float-right text-muted text-sm">
+							{{ elapsedTime($unreadNotifications->first()->updated_at) }}
+						</span>
+						@else
+							<i class="fa fa-envelope mr-2"></i>You have no new messages.
+
+							<span class="float-right text-muted text-sm"><i class="fa fa-refresh"></i></span>
+						@endif
 					</a>
 					<div class="dropdown-divider"></div>
 					<a href="#" class="dropdown-item">
@@ -202,21 +218,11 @@
 						</ul>
 					</li>
 					<li class="nav-item has-treeview">
-						<a href="#" class="nav-link">
-							<i class="nav-icon fa fa-envelope-o"></i>
-							<p>
-								Mailbox
-								<i class="fa fa-angle-left right"></i>
-							</p>
+						<a href="{{ route('home') }}" class="nav-link">
+							<i class="nav-icon fa fa-envelope"></i>
+							<p>Inbox</p>
+							<span class="right badge badge-danger">{{ $unreadNotifications->count() }} new</span>
 						</a>
-						<ul class="nav nav-treeview">
-							<li class="nav-item">
-								<a href="" class="nav-link">
-									<i class="fa fa-envelope-open nav-icon"></i>
-									<p>Inbox</p>
-								</a>
-							</li>
-						</ul>
 					</li>
 					<li class="nav-item has-treeview">
 						<a href="{{ route('logout') }}" class="nav-link" onclick="event.preventDefault();
