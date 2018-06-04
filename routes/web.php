@@ -32,3 +32,9 @@ Route::post('/password', [
 	'uses' => 'HomeController@updateUserPassword',
 	'as' => 'user.password'
 ]);
+
+// Notification routes
+Route::get('/inbox', [
+	'uses' => 'HomeController@showUserInbox',
+	'as' => 'user.inbox'
+]);
