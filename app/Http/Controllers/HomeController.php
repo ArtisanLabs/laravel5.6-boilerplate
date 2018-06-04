@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PasswordRequest;
-use App\User;
+use App\Notifications\AccountActivity;
 use Illuminate\Support\Facades\Hash;
 
 class HomeController extends Controller {
@@ -67,6 +67,9 @@ class HomeController extends Controller {
 		$user->password = bcrypt($newPassword);
 
 		$user->update();
+
+		// Create a new password notification
+		auth()->user()->notify(new AccountActivity('Password Update', 'Your password has been successfully updated.'));
 
 		return redirect()->back()->with('success', 'You have successfully changed your password.');
 	}
