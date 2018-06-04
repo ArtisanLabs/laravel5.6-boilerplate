@@ -69,9 +69,9 @@ class HomeController extends Controller {
 		$user->update();
 
 		// Create a new password notification
-		auth()->user()->notify(new AccountActivity('Password Update', 'Your password has been successfully updated.'));
+		auth()->user()->notify(new AccountActivity('Password Update', 'Your password has been successfully updated. If this was not you, kindly contact the system administrator as your account might have been compromised.'));
 
-		return redirect()->back()->with('success', 'You have successfully changed your password. If this was not you, kindly contact the system administrator.');
+		return redirect()->back()->with('success', 'You have successfully changed your password.');
 	}
 
 	/**
@@ -90,5 +90,15 @@ class HomeController extends Controller {
 			'unreadNotifs' => $unreadNotifs,
 			'allNotifs' => $allNotifs
 		]);
+	}
+
+	/**
+	 * Fetch a notif to be read.
+	 * Gets only the auth user notifs
+	 * @param string $id
+	 * @return string
+	 */
+	public function readNotif(string $id){
+		return auth()->user()->notifications->find($id);
 	}
 }
