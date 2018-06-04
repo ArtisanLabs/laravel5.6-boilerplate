@@ -34,7 +34,18 @@ Route::post('/password', [
 ]);
 
 // Notification routes
-Route::get('/inbox', [
-	'uses' => 'HomeController@showUserInbox',
-	'as' => 'user.inbox'
-]);
+Route::group([
+	'prefix' => 'notifs'
+], function (){
+	// Unread notifs route
+	Route::get('/', [
+		'uses' => 'HomeController@showUserInbox',
+		'as' => 'user.notifs'
+	]);
+
+	// Read a particular notif
+	Route::get('/read/{id}', [
+		'uses' => 'HomeController@readNotif',
+		'as' => 'user.notif.read'
+	]);
+});
