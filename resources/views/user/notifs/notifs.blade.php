@@ -58,7 +58,7 @@
 					<div class="card-body p-0">
 						<ul class="nav nav-pills flex-column">
 							<li class="nav-item active">
-								<a href="{{ route('user.inbox') }}" class="nav-link">
+								<a href="{{ route('user.notifs') }}" class="nav-link">
 									<i class="fa fa-inbox"></i> Notifs
 									<span class="badge bg-success float-right">{{ number_format($unreadNotifs->count()) }}</span>
 								</a>
@@ -102,7 +102,7 @@
 										<tbody>
 										<tr>
 											<td class="mailbox-name"><a
-														href="read-mail.html">{{ $unreadNotif->data['title'] }}</a></td>
+														href="{{ route('user.notif.read', ['id' => $unreadNotif->id]) }}">{{ $unreadNotif->data['title'] }}</a></td>
 											<td class="mailbox-subject">{{ (strlen($unreadNotif->data['message']) > 60) ? substr($unreadNotif->data['message'], 0, 70).'...' : $unreadNotif->data['message'] }}</td>
 											<td class="mailbox-date">{{ elapsedNotifTime($unreadNotif->updated_at) }}
 												ago
